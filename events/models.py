@@ -8,10 +8,6 @@ class Event(models.Model):
     description = models.TextField()
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events')
     location = models.CharField(max_length=200)
-    EVENT_TYPE = models.[
-        ('SP', 'Sportovní akce'), ('GA', 'Gastro akce'), ('CHA', 'Charitativní akce'), ('MA', 'Moto akce'), ('K', 'Koncert')
-    ]
-    event_type = models.CharField(max_length=2, choices=EVENT_TYPE, default='SP')
 
 
 
