@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ event.title }}</h1>
+<p><strong>Místo:</strong> {{ event.location }}</p>
+<p><strong>Datum:</strong> {{ event.start_date }} - {{ event.end_date }}</p>
+<p><strong>Typ:</strong> {{ event.get_event_type_display }}</p>
+<p>{{ event.description }}</p>
+<h2>Komentáře</h2>
+<ul>
+    {% for comment in comments %}
+    <li>{{ comment.user.username }}: {{ comment.content }} ({{ comment.created_at }})</li>
+    {% endfor %}
+</ul>
+{% if user.is_authenticated %}
+<h3>Přidat komentář</h3>
+<form method="post" action="{% url 'add_comment' event.id %}">
+    {% csrf_token %}
+    <textarea name="content"></textarea><br>
+    <button type="submit">Přidat</button>
+</form>
+{% endif %}
+<a href="{% url 'register_for_event' event.id %}">Přihlásit se na událost</a>
+{% endblock %}
