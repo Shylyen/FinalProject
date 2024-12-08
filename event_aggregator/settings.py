@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'event_aggregator2.urls'
+ROOT_URLCONF = 'event_aggregator.urls'
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'event_aggregator2.wsgi.application'
+WSGI_APPLICATION = 'event_aggregator.wsgi.application'
 
 
 # Database
