@@ -7,6 +7,13 @@ class Event(models.Model):
     end_date = models.DateTimeField()
     description = models.TextField()
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events')
+    location = models.CharField(max_length=200)
+    EVENT_TYPE = models.[
+        ('SP', 'Sportovní akce'), ('GA', 'Gastro akce'), ('CHA', 'Charitativní akce'), ('MA', 'Moto akce'), ('K', 'Koncert')
+    ]
+    event_type = models.CharField(max_length=2, choices=EVENT_TYPE, default='SP')
+
+
 
 class Comment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='comments')
