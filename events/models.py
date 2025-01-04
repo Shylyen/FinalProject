@@ -6,9 +6,8 @@ class Event(models.Model):
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     description = models.TextField()
-    organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events')
-    location = models.CharField(max_length=200)
-
+    organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events',null=True)
+    location = models.CharField(max_length=200,null=True)
 
 
 class Comment(models.Model):
