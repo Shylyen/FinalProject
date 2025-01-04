@@ -5,7 +5,7 @@
 <p><strong>Datum:</strong> {{ event.start_date }} - {{ event.end_date }}</p>
 <p><strong>Typ:</strong> {{ event.get_event_type_display }}</p>
 <p>{{ event.description }}</p>
-<h2>Komentáře</h2>
+{% comment %}<h2>Komentáře</h2>
 <ul>
     {% for comment in comments %}
     <li>{{ comment.user.username }}: {{ comment.content }} ({{ comment.created_at }})</li>
@@ -20,4 +20,5 @@
 </form>
 {% endif %}
 <a href="{% url 'register_for_event' event.id %}">Přihlásit se na událost</a>
+{% endcomment %}
 {% endblock %}
