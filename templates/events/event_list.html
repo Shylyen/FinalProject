@@ -4,8 +4,7 @@
 <ul>
     {% for event in events %}
     <li>
-       {% comment %}  <a href="{% url 'event_detail' event.id %}">{{ event.title }}</a> {% endcomment %}
-        {{ event.title }}
+       <a href="{% url 'event_detail' event.id %}">{{ event.title }}</a>
         ({{ event.start_date }} - {{ event.end_date }})
         - {{ event.location }}
         - Typ: {{ event.get_event_type_display }}

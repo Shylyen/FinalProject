@@ -51,3 +51,7 @@ def add_event(request):
 def event_list(request):
     events = Event.objects.all()
     return render(request,"events/event_list.html",{"events":events})
+
+def event_detail(request,pk):
+    event= Event.objects.get(id=pk)
+    return render(request, "events/event.detail.html", {"event": event})
