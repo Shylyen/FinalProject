@@ -10,7 +10,6 @@ class Event(models.Model):
     location = models.CharField(max_length=200)
 
 
-
 class Comment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='comments')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
