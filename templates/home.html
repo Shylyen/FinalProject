@@ -1,10 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>Home page</h1>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+<h1>Domovská stránka</h1>
+
+<div class="search-container">
+    <form method="GET" action="{% url 'search_results' %}">
+        <input type="text" name="query" placeholder="Hledat události">
+        <select name="filter">
+            <option value="all">Vše</option>
+            <option value="future">Akce co probíhají</option>
+            <option value="ongoing_future">Akce co již proběhly</option>
+        </select>
+        <button type="submit">Hledat</button>
+    </form>
+</div>
+{% endblock %}

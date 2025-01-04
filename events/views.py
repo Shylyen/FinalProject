@@ -55,3 +55,19 @@ def event_list(request):
 def event_detail(request,pk):
     event= Event.objects.get(id=pk)
     return render(request, "events/event.detail.html", {"event": event})
+
+def search_results(request):
+    query = request.GET.get('query', '')
+    filter_option = request.GET.get('filter', 'all')
+
+    events = Event.objects.all()
+
+    if query:
+        events = events.filter(title__icontains=query)
+
+    if filter_option == 'future':
+        events = events.filter(start_date__gte=timezone.now())
+    elif filter_option == 'ongoing_future':
+        events = events.filter(end_date__gte=timezone.now())
+
+    return render(request, 'events/search_results.html', {'events': events, 'query': query, 'filter_option': filter_option})

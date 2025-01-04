@@ -1,13 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Seznam událostí</h1>
+
+<form method="GET" action="{% url 'search_results' %}">
+    <input type="text" name="query" placeholder="Hledat události">
+    <select name="filter">
+        <option value="all">Vše</option>
+        <option value="future">Nastávající akce</option>
+        <option value="ongoing_future">Probíhající akce </option>
+    </select>
+    <button type="submit">Hledat</button>
+</form>
+
 <ul>
     {% for event in events %}
     <li>
        <a href="{% url 'event_detail' event.id %}">{{ event.title }}</a>
         ({{ event.start_date }} - {{ event.end_date }})
         - {{ event.location }}
-        - Typ: {{ event.get_event_type_display }}
     </li>
     {% endfor %}
 </ul>
