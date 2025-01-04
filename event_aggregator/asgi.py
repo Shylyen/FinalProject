@@ -1,5 +1,5 @@
 """
-ASGI config for event_aggregator project.
+ASGI config for event_aggregator2 project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'event_aggregator.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'event_aggregator2.settings')
 
 application = get_asgi_application()
