@@ -1,11 +1,10 @@
 # events/views.py
-
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-
 from events.forms import EventForm
-from events.models import Event
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Event
+from .forms import CommentForm
 
 
 def login_view(request):
@@ -75,3 +74,19 @@ def search_results(request):
         events = events.filter(end_date__gte=timezone.now())
 
     return render(request, 'events/search_results.html', {'events': events, 'query': query, 'filter_option': filter_option})
+
+def event_detail(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    comments = event.comments.all()
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.event = event
+            comment.user = request.user
+            comment.save()
+            return redirect('event_detail', event_id=event.id)
+    else:
+        form = CommentForm()
+
+    return render(request, 'events/event.detail.html', {'event': event, 'comments': comments, 'form': form})

@@ -1,5 +1,7 @@
-from django import forms
 from .models import Event
+from django import forms
+
+
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -26,3 +28,11 @@ class EventForm(forms.ModelForm):
         if start_date and end_date and start_date > end_date:
             raise forms.ValidationError("Datum od nemůže být později než datum do.")
         return cleaned_data
+
+from django import forms
+from .models import Comment
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
