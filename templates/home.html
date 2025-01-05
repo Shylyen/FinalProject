@@ -11,7 +11,7 @@
         <p>Logged in as: {{ user.email }}</p>
         <a href="{% url 'logout' %}">Logout</a>
     {% else %}
-        <a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>
+        {% comment %}<a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>{% endcomment %}
     {% endif %}
 
     <h2>Events</h2>

@@ -14,6 +14,6 @@ urlpatterns = [
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/register/', include('registration.backends.default.urls')),
     path('add/', views.add_event, name='add_event'),
-    path("events",views.event_list,name="event_list"),
+    path("events/",views.event_list,name="event_list"),
     path("event/<pk>",event_detail,name="event_detail"),
 ]
