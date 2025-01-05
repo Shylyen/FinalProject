@@ -18,6 +18,10 @@ def login_view(request):
             return redirect('event_list')
     return render(request, 'events/login.html')
 
+def user_logout(request):
+    logout(request)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
 def logout_view(request):
     logout(request)
     return redirect('event_list')
