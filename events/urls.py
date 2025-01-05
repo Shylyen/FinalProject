@@ -7,12 +7,11 @@ from events.views import home
 from events import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("",home),
-    path('', include('events.urls')),
+    path('',home),
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/register/', include('registration.backends.default.urls')),
-    path('add/', views.add_event, name='add_event'),
+    path('add_event/', views.add_event, name='add_event'),
     path("events",views.event_list,name="event_list"),
+    path('', views.home, name='home'),
 ]
