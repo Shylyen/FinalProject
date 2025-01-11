@@ -18,8 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from events import views
 from django.contrib.auth import views as auth_views
-
-from events.views import user_logout
+from events.views import user_logout, EventList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,11 +26,12 @@ urlpatterns = [
     path('events/', include('events.urls')),  # Události
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/logout/', user_logout, name='logout'),
-    path('accounts/register/', include('registration.backends.default.urls')),
+    path('accounts/register/', include('django_registration.backends.one_step.urls')),
     path('add/', views.add_event, name='add_event'),
     path('search/', views.search_results, name='search_results'),
     path('event/<int:event_id>/', views.event_detail, name='event_detail'),
     path('about/', views.about, name='about'),
-
+    path('api/events/', EventList.as_view(), name='event-list'),
+    # path('', include('myapp.urls')),
 ]
 

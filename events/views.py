@@ -3,8 +3,13 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from events.forms import EventForm
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Event
 from .forms import CommentForm
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.utils import timezone
+from .models import Event
+from .serializers import EventSerializer
 
 
 def login_view(request):
@@ -93,3 +98,13 @@ def event_detail(request, event_id):
 
 def about(request):
     return render(request, 'about.html')
+
+class EventList(APIView):
+    def get(self, request, format=None):
+        events = Event.objects.filter(start_date__gte=timezone.now())
+        start_date = request.query_params.get('start_date')
+        end_date = request.query_params.get('end_date')
+        if start_date and end_date:
+            events = events.filter(start_date__gte=start_date, end_date__lte=end_date)
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
