@@ -90,3 +90,6 @@ def event_detail(request, event_id):
         form = CommentForm()
 
     return render(request, 'events/event.detail.html', {'event': event, 'comments': comments, 'form': form})
+
+def about(request):
+    return render(request, 'about.html')
