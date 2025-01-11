@@ -36,7 +36,7 @@
                 </li>
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#about">O nás</a>
+                    <a class="nav-link" href="{% url 'about' %}">O nás</a>
                 </li>
                 <li class="nav-item">
                     <span class="nav-link">Přihlášen jako: {{ user.username }}</span>

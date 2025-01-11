@@ -1,11 +1,19 @@
 # events/views.py
+from datetime import timezone
+from turtledemo.clock import datum
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from events.forms import EventForm
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Event
 from .forms import CommentForm
-
+from rest_framework import viewsets, status
+from django.utils.timezone import now
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import viewsets
+from .models import Event
+from .serializers import EventSerializer
 
 def login_view(request):
     if request.method == 'POST':
@@ -37,7 +45,6 @@ def register_view(request):
 
 def home(request):
     return render(request, "home.html")
-
 
 def add_event(request):
     if request.method == 'POST':
@@ -93,3 +100,49 @@ def event_detail(request, event_id):
 
 def about(request):
     return render(request, 'about.html')
+
+
+class EventViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+
+    # snadný přístup dp API http://127.0.0.1:8000/api/events/upcoming/
+
+    @action(detail=False, methods=['get'])
+    def upcoming(self, request):
+        start_time = request.query_params.get('start_date', None)
+        end_time = request.query_params.get('end_date', None)
+        events = Event.objects.filter(start_date__gte=now())
+
+        if start_time:
+            events = events.filter(start_date__gte=start_time)
+        if end_time:
+            events = events.filter(end_date__lte=end_time)
+
+        serializer = self.get_serializer(events, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def detail(self, request, pk=None):
+        event = get_object_or_404(Event, pk=pk)
+        serializer = self.get_serializer(event)
+        return Response(serializer.data)
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    @action(detail=False, methods=['post'])
+    def create_event(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
