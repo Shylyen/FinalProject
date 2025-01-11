@@ -30,4 +30,5 @@ urlpatterns = [
     path('accounts/register/', include('registration.backends.default.urls')),
     path('add/', views.add_event, name='add_event'),
     path('search/', views.search_results, name='search_results'),
+    path('events/<int:event_id>/edit/', views.edit_event, name='edit_event'),
 ]

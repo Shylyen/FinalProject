@@ -2,8 +2,9 @@
 
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponseForbidden
 from events.forms import EventForm
 from events.models import Event
 
@@ -75,3 +76,21 @@ def search_results(request):
         events = events.filter(end_date__gte=timezone.now())
 
     return render(request, 'events/search_results.html', {'events': events, 'query': query, 'filter_option': filter_option})
+
+@login_required
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    # Only allow the creator or an admin to edit
+    if request.user != event.created_by and not request.user.is_staff:
+        return HttpResponseForbidden("You do not have permission to edit this event.")
+
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_detail', event_id=event.id)
+    else:
+        form = EventForm(instance=event)
+
+    return render(request, 'events/edit_event.html', {'form': form, 'event': event})

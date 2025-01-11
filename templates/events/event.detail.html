@@ -5,7 +5,9 @@
 <p><strong>Datum:</strong> {{ event.start_date }} - {{ event.end_date }}</p>
 <p><strong>Typ:</strong> {{ event.get_event_type_display }}</p>
 <p>{{ event.description }}</p>
-{% comment %}<h2>Komentáře</h2>
+
+{% comment %}
+<h2>Komentáře</h2>
 <ul>
     {% for comment in comments %}
     <li>{{ comment.user.username }}: {{ comment.content }} ({{ comment.created_at }})</li>
@@ -21,4 +23,9 @@
 {% endif %}
 <a href="{% url 'register_for_event' event.id %}">Přihlásit se na událost</a>
 {% endcomment %}
+
+{% if user == event.created_by or user.is_staff %}
+    <a href="{% url 'edit_event' event.id %}" class="btn btn-warning mt-3">Edit Event</a>
+{% endif %}
+
 {% endblock %}
