@@ -1,10 +1,17 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
 from . import views
+from .views import EventViewSet
+
+router = DefaultRouter()
+router.register(r'events', EventViewSet, basename='events')
 
 urlpatterns = [
-    path('', views.event_list, name='event_list'),  # cesta pro seznam událostí
-    path('<int:id>/', views.event_detail, name='event_detail'),  # cesta pro detail události
-    path('event/<int:event_id>/', views.event_detail, name='event_detail'),
+    path('', include(router.urls)),
+    path('list/', views.event_list, name='event_list'),  # cesta pro event_list
 ]
+
+
 
 
