@@ -1,32 +1,27 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class CustomUser(User):
-    name = models.CharField(max_length=50)
-    is_organizer = models.BooleanField(default=False)
-
-    USERNAME_FIELD = 'email'  # Use email as the username field
-    REQUIRED_FIELDS = ['username', 'name']  # Fields required during user creation
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     description = models.TextField()
-    organizer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='organized_events')
-    location = models.CharField(max_length=200)
-
+    organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events',null=True)
+    location = models.CharField(max_length=200,null=True)
+    def __str__(self):
+        return self.title
 
 class Comment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(max_length=500)
     created_at = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        ordering = ['-created_at']
+
 
 class Registration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     registered_at = models.DateTimeField(auto_now_add=True)
-
-
-

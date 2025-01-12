@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Site</title>
+</head>
+<body>
+   {% extends "base.html" %}
+    {% block content %}
+    <h1>O Nás</h1>
+    <p>Tato stránka je věnovaná informacím o naší organizaci. Zde se dozvíte o naší historii, misi a týmu.</p>
+
+    <h2>Naše Historie</h2>
+    <p>Naše organizace byla založena v roce [Rok založení] s cílem [Cíl organizace].</p>
+
+    <h2>Naše Mise</h2>
+    <p>Naší misí je [Popis mise]. Snažíme se [Konkrétní aktivity nebo cíle].</p>
+
+    <h2>Náš Tým</h2>
+    <p>Náš tým se skládá z talentovaných a oddaných profesionálů:</p>
+    <ul>
+        <li>[Jméno 1] - [Pozice 1]</li>
+        <li>[Jméno 2] - [Pozice 2]</li>
+        <li>[Jméno 3] - [Pozice 3]</li>
+        <!-- Přidej více členů týmu podle potřeby -->
+    </ul>
+
+    <h2>Kontakt</h2>
+    <p>Pokud máte jakékoli otázky nebo chcete s námi spolupracovat, neváhejte nás kontaktovat:</p>
+    <p>Email: <a href="mailto:[tvůj email]">[tvůj email]</a></p>
+    <p>Telefon: [tvé telefonní číslo]</p>
+    {% endblock %}
+</body>
+</html>

@@ -1,65 +1,148 @@
-from django.shortcuts import render, redirect
+# events/views.py
+from datetime import timezone
+from turtledemo.clock import datum
 from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm
+from events.forms import EventForm
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Event
-from .forms import EventForm
-from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm
+from .forms import CommentForm
+from rest_framework import viewsets, status
+from django.utils.timezone import now
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import viewsets
+from .models import Event
+from .serializers import EventSerializer
 
-# Login View
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
             login(request, user)
-            return redirect('home')
-        else:
-            form = AuthenticationForm()
-        return render(request, 'events/login.html')
+            return redirect('event_list')
+    return render(request, 'events/login.html')
 
-# Logout View
+def user_logout(request):
+    logout(request)
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
 def logout_view(request):
     logout(request)
-    return redirect('home')
+    return redirect('event_list')
 
-# Register View
 def register_view(request):
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')
+            form.save()
+            return redirect('login')
     else:
-        form = CustomUserCreationForm()
+        form = UserCreationForm()
     return render(request, 'events/register.html', {'form': form})
 
-# Home Page View
 def home(request):
-    events = Event.objects.all()
-    return render(request, 'home.html', {'events': events})
+    return render(request, "home.html")
 
-# Add Event View (Requires Login)
-@login_required
 def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
         if form.is_valid():
             event = form.save(commit=False)
-            event.creator = request.user  # Set the creator to the current user
+            event.user = request.user
             event.save()
-            return redirect('event_list')  # Redirect to event list or event details page
+            return redirect('event_list')
     else:
         form = EventForm()
-    return render(request, 'events/add_event.html', {'form': form})
+    return render(request, 'add_event.html', {'form': form})
 
-# Event List View
 def event_list(request):
     events = Event.objects.all()
-    return render(request, 'events/event_list.html', {'events': events})
+    return render(request,"events/event_list.html",{"events":events})
 
-# Event Detail View
+def event_detail(request,pk):
+    event= Event.objects.get(id=pk)
+    return render(request, "events/event.detail.html", {"event": event})
+
+def search_results(request):
+    query = request.GET.get('query', '')
+    filter_option = request.GET.get('filter', 'all')
+
+    events = Event.objects.all()
+
+    if query:
+        events = events.filter(title__icontains=query)
+
+    if filter_option == 'future':
+        events = events.filter(start_date__gte=timezone.now())
+    elif filter_option == 'ongoing_future':
+        events = events.filter(end_date__gte=timezone.now())
+
+    return render(request, 'events/search_results.html', {'events': events, 'query': query, 'filter_option': filter_option})
+
 def event_detail(request, event_id):
-    event = Event.objects.get(id=event_id)
-    return render(request, 'events/event_detail.html', {'event': event})
+    event = get_object_or_404(Event, id=event_id)
+    comments = event.comments.all()
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.event = event
+            comment.user = request.user
+            comment.save()
+            return redirect('event_detail', event_id=event.id)
+    else:
+        form = CommentForm()
+
+    return render(request, 'events/event.detail.html', {'event': event, 'comments': comments, 'form': form})
+
+def about(request):
+    return render(request, 'about.html')
+
+
+class EventViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+
+    # snadný přístup dp API http://127.0.0.1:8000/api/events/upcoming/
+
+    @action(detail=False, methods=['get'])
+    def upcoming(self, request):
+        start_time = request.query_params.get('start_date', None)
+        end_time = request.query_params.get('end_date', None)
+        events = Event.objects.filter(start_date__gte=now())
+
+        if start_time:
+            events = events.filter(start_date__gte=start_time)
+        if end_time:
+            events = events.filter(end_date__lte=end_time)
+
+        serializer = self.get_serializer(events, many=True)
+        return Response(serializer.data)
+
+    @action(detail=True, methods=['get'])
+    def detail(self, request, pk=None):
+        event = get_object_or_404(Event, pk=pk)
+        serializer = self.get_serializer(event)
+        return Response(serializer.data)
+
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+    @action(detail=False, methods=['post'])
+    def create_event(self, request):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+

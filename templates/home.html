@@ -1,26 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-</head>
-<body>
-    <h1>Welcome to Event Aggregator</h1>
+{% extends "base.html" %}
+{% block content %}
+<h1>Domovská stránka</h1>
 
-    {% if user.is_authenticated %}
-        <p>Logged in as: {{ user.email }}</p>
-        <a href="{% url 'logout' %}">Logout</a>
-    {% else %}
-        {% comment %}<a href="{% url 'login' %}">Login</a> | <a href="{% url 'register' %}">Register</a>{% endcomment %}
-    {% endif %}
-
-    <h2>Events</h2>
-    <ul>
-        {% for event in events %}
-            <li><a href="{% url 'event_detail' event.id %}">{{ event.title }}</a> - {{ event.date }}</li>
-        {% endfor %}
-    </ul>
-
-    <a href="{% url 'add_event' %}">Add New Event</a>
-</body>
-</html>
+<div class="search-container">
+    <form method="GET" action="{% url 'search_results' %}">
+        <label>
+            <input type="text" name="query" placeholder="Hledat události">
+        </label>
+        <label>
+            <select name="filter">
+                <option value="all">Vše</option>
+                <option value="future">Akce co probíhají</option>
+                <option value="ongoing_future">Akce co již proběhly</option>
+            </select>
+        </label>
+        <button type="submit">Hledat</button>
+    </form>
+</div>
+{% endblock %}
