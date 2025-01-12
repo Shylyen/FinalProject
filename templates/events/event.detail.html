@@ -6,7 +6,7 @@
 <p><strong>Typ:</strong> {{ event.get_event_type_display }}</p>
 <p>{{ event.description }}</p>
 
-{% comment %}
+
 <h2>Komentáře</h2>
 <ul>
     {% for comment in comments %}
@@ -15,7 +15,7 @@
 </ul>
 {% if user.is_authenticated %}
 <h3>Přidat komentář</h3>
-<form method="post" action="{% url 'add_comment' event.id %}">
+<form method="post"">
     {% csrf_token %}
     <textarea name="content"></textarea><br>
     <button type="submit">Přidat</button>

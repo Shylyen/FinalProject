@@ -36,4 +36,5 @@ urlpatterns = [
     path('event/<int:event_id>/', views.event_detail, name='event_detail'),
     path('about/', views.about, name='about'),
     path('api/', include('events.urls')),
+    # path("addcoment", views.add)
 ]

@@ -1,17 +1,14 @@
 # events/views.py
 from datetime import timezone
-from turtledemo.clock import datum
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from events.forms import EventForm
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Event
 from .forms import CommentForm
 from rest_framework import viewsets, status
 from django.utils.timezone import now
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import viewsets
 from .models import Event
 from .serializers import EventSerializer
 from django.shortcuts import render, redirect, get_object_or_404
@@ -149,27 +146,6 @@ class EventViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-
-
-
-
-
-def event_detail(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
-    comments = event.comments.all()
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.event = event
-            comment.user = request.user
-            comment.save()
-            return redirect('event_detail', event_id=event.id)
-    else:
-        form = CommentForm()
-
-    return render(request, 'events/event.detail.html', {'event': event, 'comments': comments, 'form': form})
 
 
 @login_required
