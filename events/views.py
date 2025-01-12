@@ -14,6 +14,13 @@ from rest_framework.response import Response
 from rest_framework import viewsets
 from .models import Event
 from .serializers import EventSerializer
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.http import HttpResponseForbidden
+from events.forms import EventForm, CommentForm
+from events.models import Event
+import requests
+
 
 def login_view(request):
     if request.method == 'POST':
@@ -145,4 +152,67 @@ class EventViewSet(viewsets.ModelViewSet):
 
 
 
+
+
+
+def event_detail(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    comments = event.comments.all()
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.event = event
+            comment.user = request.user
+            comment.save()
+            return redirect('event_detail', event_id=event.id)
+    else:
+        form = CommentForm()
+
+    return render(request, 'events/event.detail.html', {'event': event, 'comments': comments, 'form': form})
+
+
+@login_required
+def edit_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    # Only allow the creator or an admin to edit
+    if request.user != event.created_by and not request.user.is_staff:
+        return HttpResponseForbidden("You do not have permission to edit this event.")
+
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            return redirect('event_detail', event_id=event.id)
+    else:
+        form = EventForm(instance=event)
+
+    return render(request, 'events/edit_event.html', {'form': form, 'event': event})
+
+
+API_URL = "https://www.kudyznudy.cz/kalendar-akci/api-events/"
+
+def api_event_list(request):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    params = {}
+    if start_date:
+        params['start_date'] = start_date
+    if end_date:
+        params['end_date'] = end_date
+
+    print(f"Fetching events with params: {params}")  # Debug log
+
+    try:
+        response = requests.get(API_URL, params=params)
+        response.raise_for_status()
+        print(f"API Response: {response.text}")  # Debug log
+        events = response.json()
+    except requests.RequestException as e:
+        print(f"Error fetching events: {e}")
+        events = []
+
+    return render(request, 'events/api_event_list.html', {'events': events})
 

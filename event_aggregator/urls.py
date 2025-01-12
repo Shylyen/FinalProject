@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from events import views
 from django.contrib.auth import views as auth_views
+
 from events.views import user_logout
 
 urlpatterns = [
@@ -29,8 +30,10 @@ urlpatterns = [
     path('accounts/register/', include('registration.backends.default.urls')),
     path('add/', views.add_event, name='add_event'),
     path('search/', views.search_results, name='search_results'),
+    path('events/<int:event_id>/edit/', views.edit_event, name='edit_event'),
+    path('', views.event_list, name='event_list'),  # Existing view
+    path('api-events/', views.api_event_list, name='api_event_list'),  # New API consumer view
     path('event/<int:event_id>/', views.event_detail, name='event_detail'),
     path('about/', views.about, name='about'),
     path('api/', include('events.urls')),
 ]
-

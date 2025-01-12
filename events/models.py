@@ -9,6 +9,8 @@ class Event(models.Model):
     description = models.TextField()
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='organized_events',null=True)
     location = models.CharField(max_length=200,null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creates_events',null=True)
+
     def __str__(self):
         return self.title
 

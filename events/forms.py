@@ -1,5 +1,6 @@
-from .models import Event
 from django import forms
+from .models import Event
+
 
 class EventForm(forms.ModelForm):
     class Meta:
@@ -31,8 +32,10 @@ class EventForm(forms.ModelForm):
             raise forms.ValidationError("Datum od nemůže být později než datum do.")
         return cleaned_data
 
+
 from django import forms
 from .models import Comment
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
