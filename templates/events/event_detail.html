@@ -6,21 +6,23 @@
 <p><strong>Typ:</strong> {{ event.get_event_type_display }}</p>
 <p>{{ event.description }}</p>
 
-{% comment %}
 <h2>Komentáře</h2>
 <ul>
     {% for comment in comments %}
     <li>{{ comment.user.username }}: {{ comment.content }} ({{ comment.created_at }})</li>
     {% endfor %}
 </ul>
+
 {% if user.is_authenticated %}
 <h3>Přidat komentář</h3>
-<form method="post" action="{% url 'add_comment' event.id %}">
+<form method="post">
     {% csrf_token %}
-    <textarea name="content"></textarea><br>
+    <textarea name="content" rows="4" cols="50" placeholder="Napiš svůj komentář sem"></textarea>
+    <br>
     <button type="submit">Přidat</button>
 </form>
 {% endif %}
+
 {% comment %}
 <a href="{% url 'register_for_event' event.id %}">Přihlásit se na událost</a>
 {% endcomment %}
@@ -28,5 +30,4 @@
 {% if user == event.created_by or user.is_staff %}
     <a href="{% url 'edit_event' event.id %}" class="btn btn-warning mt-3">Edit Event</a>
 {% endif %}
-
 {% endblock %}

@@ -1,18 +1,12 @@
 # events/views.py
 from datetime import timezone
-from turtledemo.clock import datum
+from django.conf import settings  # Přidáno pro import settings
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
-from events.forms import EventForm
-from django.shortcuts import render, get_object_or_404, redirect
-from .models import Event
-from .forms import CommentForm
 from rest_framework import viewsets, status
 from django.utils.timezone import now
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework import viewsets
-from .models import Event
 from .serializers import EventSerializer
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -20,7 +14,6 @@ from django.http import HttpResponseForbidden
 from events.forms import EventForm, CommentForm
 from events.models import Event
 import requests
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -67,27 +60,7 @@ def add_event(request):
 
 def event_list(request):
     events = Event.objects.all()
-    return render(request,"events/event_list.html",{"events":events})
-
-def event_detail(request,pk):
-    event= Event.objects.get(id=pk)
-    return render(request, "events/event.detail.html", {"event": event})
-
-def search_results(request):
-    query = request.GET.get('query', '')
-    filter_option = request.GET.get('filter', 'all')
-
-    events = Event.objects.all()
-
-    if query:
-        events = events.filter(title__icontains=query)
-
-    if filter_option == 'future':
-        events = events.filter(start_date__gte=timezone.now())
-    elif filter_option == 'ongoing_future':
-        events = events.filter(end_date__gte=timezone.now())
-
-    return render(request, 'events/search_results.html', {'events': events, 'query': query, 'filter_option': filter_option})
+    return render(request, "events/event_list.html", {"events": events})
 
 def event_detail(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -103,19 +76,36 @@ def event_detail(request, event_id):
     else:
         form = CommentForm()
 
-    return render(request, 'events/event.detail.html', {'event': event, 'comments': comments, 'form': form})
+    return render(request, 'events/event_detail.html', {'event': event, 'comments': comments, 'form': form})
+
+def search_results(request):
+    query = request.GET.get('query', '')
+    filter_option = request.GET.get('filter', 'all')
+
+    events = Event.objects.all()
+
+    if query:
+        events = events.filter(title__icontains=query)
+
+    if filter_option == 'future':
+        # Nastávající akce: které ještě nezačaly
+        events = events.filter(start_date__gt=now())
+    elif filter_option == 'ongoing_future':
+        # Probíhající akce: které už začaly, ale ještě neskončily
+        events = events.filter(start_date__lte=now(), end_date__gte=now())
+    elif filter_option == 'past':
+        events = events.filter(end_date__lt=now())
+
+    return render(request, 'events/search_results.html', {'events': events, 'query': query, 'filter_option': filter_option})
 
 def about(request):
     return render(request, 'about.html')
-
 
 class EventViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
 
-
     # snadný přístup dp API http://127.0.0.1:8000/api/events/upcoming/
-
     @action(detail=False, methods=['get'])
     def upcoming(self, request):
         start_time = request.query_params.get('start_date', None)
@@ -136,7 +126,6 @@ class EventViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(event)
         return Response(serializer.data)
 
-
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
@@ -148,29 +137,6 @@ class EventViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
-
-
-def event_detail(request, event_id):
-    event = get_object_or_404(Event, id=event_id)
-    comments = event.comments.all()
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.event = event
-            comment.user = request.user
-            comment.save()
-            return redirect('event_detail', event_id=event.id)
-    else:
-        form = CommentForm()
-
-    return render(request, 'events/event.detail.html', {'event': event, 'comments': comments, 'form': form})
-
 
 @login_required
 def edit_event(request, event_id):
@@ -189,7 +155,6 @@ def edit_event(request, event_id):
         form = EventForm(instance=event)
 
     return render(request, 'events/edit_event.html', {'form': form, 'event': event})
-
 
 API_URL = "https://www.kudyznudy.cz/kalendar-akci/api-events/"
 
@@ -215,4 +180,3 @@ def api_event_list(request):
         events = []
 
     return render(request, 'events/api_event_list.html', {'events': events})
-

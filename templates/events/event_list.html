@@ -2,22 +2,30 @@
 {% block content %}
 <h1>Seznam událostí</h1>
 
-<form method="GET" action="{% url 'search_results' %}">
-    <input type="text" name="query" placeholder="Hledat události">
-    <select name="filter">
-        <option value="all">Vše</option>
-        <option value="future">Nastávající akce</option>
-        <option value="ongoing_future">Probíhající akce </option>
-    </select>
-    <button type="submit">Hledat</button>
-</form>
+<div class="search-container">
+    <form method="GET" action="{% url 'search_results' %}">
+        <input type="text" name="query" placeholder="Hledat události">
+        <select name="filter">
+            <option value="all">Vše</option>
+            <option value="future">Nastávající akce</option>
+            <option value="ongoing_future">Probíhající akce</option>
+        </select>
+        <button type="submit">Hledat</button>
+    </form>
+</div>
 
 <ul>
     {% for event in events %}
-    <li>
-       <a href="{% url 'event_detail' event.id %}">{{ event.title }}</a>
-        ({{ event.start_date }} - {{ event.end_date }})
-        - {{ event.location }}
+    <li class="event-item">
+        <div class="event-details">
+            <a href="{% url 'event_detail' event.id %}" class="event-title">{{ event.title }}</a>
+            <p>{{ event.start_date }} - {{ event.end_date }}</p>
+            <p>{{ event.location }}</p>
+            <p>{{ event.description }}</p>
+        </div>
+        {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }} image">
+        {% endif %}
     </li>
     {% endfor %}
 </ul>

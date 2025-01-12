@@ -1,0 +1,36 @@
+.search-container {
+    margin-bottom: 1000px;
+}
+
+.event-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.event-item img {
+    width: 150px;
+    height: 150px;
+    margin-left: 20px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.event-details {
+    flex: 1;
+    text-align: left;
+}
+.event-title {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+
+
+
+
+

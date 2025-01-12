@@ -1,0 +1,21 @@
+.event-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.event-item img {
+    width: 150px !important;  /* Přidáno !important pro důraz */
+    height: 150px !important; /* Přidáno !important pro důraz */
+    margin-right: 20px;
+    object-fit: cover;
+}
+
+.event-details {
+    flex: 1;
+}
+
+
