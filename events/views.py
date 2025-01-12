@@ -56,7 +56,7 @@ def add_event(request):
             return redirect('event_list')
     else:
         form = EventForm()
-    return render(request, 'add_event.html', {'form': form})
+    return render(request, 'events/add_event.html', {'form': form})
 
 def event_list(request):
     events = Event.objects.all()
