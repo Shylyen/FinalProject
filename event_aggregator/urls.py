@@ -31,4 +31,6 @@ urlpatterns = [
     path('add/', views.add_event, name='add_event'),
     path('search/', views.search_results, name='search_results'),
     path('events/<int:event_id>/edit/', views.edit_event, name='edit_event'),
+    path('', views.event_list, name='event_list'),  # Existing view
+    path('api-events/', views.api_event_list, name='api_event_list'),  # New API consumer view
 ]

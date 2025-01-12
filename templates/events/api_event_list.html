@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Události z API</h1>
+<form method="get" class="mb-4">
+    <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" value="{{ request.GET.start_date }}">
+    <label for="end_date">End Date:</label>
+    <input type="date" id="end_date" name="end_date" value="{{ request.GET.end_date }}">
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+{% if events %}
+    <ul class="list-group">
+        {% for event in events %}
+            <li class="list-group-item">
+                <h5>{{ event.title }}</h5>
+                <p><strong>Date:</strong> {{ event.start_date }} - {{ event.end_date }}</p>
+                <p>{{ event.description }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No events found.</p>
+{% endif %}
+{% endblock %}
