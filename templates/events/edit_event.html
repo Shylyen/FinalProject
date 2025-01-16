@@ -6,10 +6,6 @@
 <p><strong>Typ:</strong> {{ event.get_event_type_display }}</p>
 <p>{{ event.description }}</p>
 
-{% if event.image %}
-    <img src="{{ event.image.url }}" alt="{{ event.title }} image">
-{% endif %}
-
 <h2>Komentáře</h2>
 <ul>
     {% for comment in comments %}
@@ -34,4 +30,3 @@
     <a href="{% url 'edit_event' event.id %}" class="btn btn-warning mt-3">Edit Event</a>
 {% endif %}
 {% endblock %}
-

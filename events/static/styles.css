@@ -8,7 +8,7 @@
     align-items: center;
     margin-bottom: 50px;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #ffffff;
     border-radius: 5px;
 }
 
@@ -29,8 +29,23 @@
     font-weight: bold;
 }
 
+.form-container {
+  display: flex;
+  justify-content: space-between;
+}
 
+.form-left {
+  width: 50%;
+}
 
+.map-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-
-
+.map {
+  height: 300px;
+  width: 100%;
+}

@@ -1,10 +1,65 @@
 {% extends 'base.html' %}
-
 {% block content %}
   <h2>Přidat událost</h2>
-  <form method="post">
+  <form method="post" class="form-container">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Uložit</button>
+    <div class="form-left">
+      {{ form.as_p }}
+      <button type="submit">Uložit</button>
+    </div>
+    
+    <div class="map-container">
+      <div id="map" class="map"></div>
+    </div>
+
+    <input type="hidden" id="id_location" name="location" value="{{ form.location.value }}">
   </form>
+
+  <script>
+    function initMap() {
+        var initialLocation = { lat: 50.088, lng: 14.420 };
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 12,
+            center: initialLocation,
+            mapTypeId: 'roadmap'
+        });
+
+        var geocoder = new google.maps.Geocoder();
+
+        var marker = new google.maps.Marker({
+            position: initialLocation,
+            map: map,
+            draggable: true
+        });
+
+        google.maps.event.addListener(marker, 'dragend', function(event) {
+            geocodeLatLng(geocoder, event.latLng);
+        });
+
+        map.addListener('click', function(event) {
+            placeMarker(event.latLng);
+            geocodeLatLng(geocoder, event.latLng);
+        });
+
+        function placeMarker(location) {
+            marker.setPosition(location);
+        }
+
+        function geocodeLatLng(geocoder, latLng) {
+            geocoder.geocode({ 'location': latLng }, function(results, status) {
+                if (status === 'OK') {
+                    if (results[0]) {
+                        console.log("Geocoding result: ", results[0].formatted_address); // Debug info
+                        document.getElementById('id_location').value = results[0].formatted_address;
+                    } else {
+                        console.log('No results found');
+                    }
+                } else {
+                    console.log('Geocoder failed due to: ' + status);
+                }
+            });
+        }
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCNXXMLCHiM9hiso9u4MqMSIQ0gW-bvEXo&callback=initMap&libraries=places" async defer></script>
 {% endblock %}
