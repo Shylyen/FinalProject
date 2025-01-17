@@ -9,10 +9,18 @@ class EventForm(forms.ModelForm):
     class Meta:
         model = Event
         fields = ['title', 'start_date', 'end_date', 'description', 'location']
+        labels = {
+            'title': 'Název',
+            'start_date': 'Datum začátku',
+            'end_date': 'Datum konce',
+            'description': 'Popis',
+            'location': 'Místo',
+        }
         widgets = {
             'start_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'end_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
+
 
     def clean_title(self):
         title = self.cleaned_data.get('title')

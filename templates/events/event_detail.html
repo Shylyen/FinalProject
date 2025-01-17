@@ -28,6 +28,6 @@
 {% endcomment %}
 
 {% if user == event.created_by or user.is_staff %}
-    <a href="{% url 'edit_event' event.id %}" class="btn btn-warning mt-3">Edit Event</a>
+    <a href="{% url 'edit_event' event.id %}" class="btn btn-warning mt-3">Upravit událost</a>
 {% endif %}
 {% endblock %}

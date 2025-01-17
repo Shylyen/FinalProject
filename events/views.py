@@ -1,6 +1,4 @@
-# events/views.py
-from datetime import timezone
-from django.conf import settings  # Přidáno pro import settings
+
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from rest_framework import viewsets, status
@@ -9,7 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from .serializers import EventSerializer
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from events.forms import EventForm, CommentForm
 from events.models import Event

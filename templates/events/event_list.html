@@ -19,9 +19,9 @@
     <li class="event-item">
         <div class="event-details">
             <a href="{% url 'event_detail' event.id %}" class="event-title">{{ event.title }}</a>
-            <p>{{ event.start_date|date:"d. m. Y"}} - {{ event.end_date|date:"d. m. Y" }}</p>
-            <p>{{ event.location }}</p>
-            <p>{{ event.description }}</p>
+            <p><strong>Datum začátku:</strong> {{ event.start_date|date:"d. m. Y"}} - <strong>Datum konce:</strong> {{ event.end_date|date:"d. m. Y" }}</p>
+            <p><strong>Místo:</strong> {{ event.location }}</p>
+            <p><strong>Popis:</strong> {{ event.description }}</p>
         </div>
         {% if event.image %}
             <img src="{{ event.image.url }}" alt="{{ event.title }} image">
