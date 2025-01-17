@@ -34,7 +34,7 @@ urlpatterns = [
     path('event/<int:event_id>/edit/', views.edit_event, name='edit_event'),  # Úprava události
     path('api-events/', views.api_event_list, name='api_event_list'),  # API pro události
     path('about/', views.about, name='about'),
-    path('api/', include('events.urls')),
+    # path('api/', include('events.urls')),
 ]
 
 if settings.DEBUG:

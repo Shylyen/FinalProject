@@ -1,11 +1,14 @@
 from django import forms
-from .models import Event
+from .models import Event, Comment
 
+from django import forms
+from django.utils import timezone
+from .models import Event
 
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['title', 'start_date', 'end_date', 'description', 'location',]
+        fields = ['title', 'start_date', 'end_date', 'description', 'location']
         widgets = {
             'start_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'end_date': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
@@ -23,6 +26,12 @@ class EventForm(forms.ModelForm):
             raise forms.ValidationError("Popis musí obsahovat minimálně 20 znaků.")
         return description
 
+    def clean_start_date(self):
+        start_date = self.cleaned_data.get('start_date')
+        if start_date and start_date < timezone.now():
+            raise forms.ValidationError('Datum od nemůže být v minulosti.')
+        return start_date
+
     def clean(self):
         cleaned_data = super().clean()
         start_date = cleaned_data.get('start_date')
@@ -31,10 +40,6 @@ class EventForm(forms.ModelForm):
         if start_date and end_date and start_date > end_date:
             raise forms.ValidationError("Datum od nemůže být později než datum do.")
         return cleaned_data
-
-
-from django import forms
-from .models import Comment
 
 
 class CommentForm(forms.ModelForm):

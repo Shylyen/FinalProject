@@ -19,7 +19,7 @@
     <li class="event-item">
         <div class="event-details">
             <a href="{% url 'event_detail' event.id %}" class="event-title">{{ event.title }}</a>
-            <p>{{ event.start_date }} - {{ event.end_date }}</p>
+            <p>{{ event.start_date|date:"d. m. Y"}} - {{ event.end_date|date:"d. m. Y" }}</p>
             <p>{{ event.location }}</p>
             <p>{{ event.description }}</p>
         </div>
