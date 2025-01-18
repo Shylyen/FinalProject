@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
 <h1>Domovská stránka</h1>
 
@@ -10,12 +12,62 @@
         <label>
             <select name="filter">
                 <option value="all">Vše</option>
-                <option value="future">Nastávající akce</option> <!-- Změněný popis -->
-                <option value="ongoing_future">Probíhající akce</option> <!-- Změněný popis -->
-                <option value="past">Minulé akce</option> <!-- Přidaná možnost -->
+                <option value="future">Nastávající akce</option>
+                <option value="ongoing_future">Probíhající akce</option>
+                <option value="past">Minulé akce</option>
             </select>
         </label>
         <button type="submit">Hledat</button>
     </form>
+</div>
+
+<style>
+.promotions {
+    padding: 1em 0;
+}
+
+.promotion-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1em; 
+}
+
+.promotion {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: calc(33.333% - 1em);
+    box-sizing: border-box;
+}
+
+.promotion img {
+    width: 150px;
+    height: 150px; 
+    object-fit: cover; 
+    margin-bottom: 1em;
+}
+
+.promotion-details {
+    text-align: center;
+}
+</style>
+
+<div class="promotions">
+    <h2>Upoutávky na akce</h2>
+    <div class="promotion-container">
+        {% for promotion in promotions %}
+        <div class="promotion">
+            <img src="{{ promotion.image.url }}" alt="{{ promotion.title }}">
+            <div class="promotion-details">
+                <h3>{{ promotion.title }}</h3>
+                <p>{{ promotion.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

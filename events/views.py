@@ -1,4 +1,3 @@
-
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from rest_framework import viewsets, status
@@ -10,7 +9,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from events.forms import EventForm, CommentForm
-from events.models import Event
 import requests
 
 def login_view(request):
@@ -41,8 +39,15 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'events/register.html', {'form': form})
 
+from django.shortcuts import render
+from .models import Event, Comment, Promotion
+
 def home(request):
-    return render(request, "home.html")
+    events = Event.objects.all()
+    comments = Comment.objects.all()
+    promotions = Promotion.objects.all()
+    print(promotions)
+    return render(request, 'home.html', {'events': events, 'comments': comments, 'promotions': promotions})
 
 def add_event(request):
     if request.method == 'POST':
