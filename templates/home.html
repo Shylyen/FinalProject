@@ -1,8 +1,10 @@
 {% extends "base.html" %}
-{% block content %}
-<h1>Domovská stránka</h1>
+{% load static %}
 
-<div class="search-container">
+{% block content %}
+<h1 class="page-title">Úvodní stránka</h1>
+
+<div class="search-container centered-search">
     <form method="GET" action="{% url 'search_results' %}">
         <label>
             <input type="text" name="query" placeholder="Hledat události">
@@ -10,11 +12,27 @@
         <label>
             <select name="filter">
                 <option value="all">Vše</option>
-                <option value="future">Akce co probíhají</option>
-                <option value="ongoing_future">Akce co již proběhly</option>
+                <option value="future">Nastávající akce</option>
+                <option value="ongoing_future">Probíhající akce</option>
+                <option value="past">Minulé akce</option>
             </select>
         </label>
         <button type="submit">Hledat</button>
     </form>
+</div>
+
+<div class="promotions">
+    <h2>Upoutávky na akce</h2>
+    <div class="promotion-container">
+        {% for promotion in promotions %}
+        <div class="promotion">
+            <img src="{{ promotion.image.url }}" alt="{{ promotion.title }}">
+            <div class="promotion-details">
+                <h3>{{ promotion.title }}</h3>
+                <p>{{ promotion.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

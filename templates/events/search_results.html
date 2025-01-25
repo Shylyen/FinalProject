@@ -1,23 +1,32 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Výsledky vyhledávání</h1>
-<form method="GET" action="{% url 'search_results' %}">
-    <input type="text" name="query" value="{{ query }}" placeholder="Hledat události">
-    <select name="filter">
-        <option value="all" {% if filter_option == 'all' %}selected{% endif %}>Vše</option>
-        <option value="future" {% if filter_option == 'future' %}selected{% endif %}>Nastávající akce</option>
-        <option value="ongoing_future" {% if filter_option == 'ongoing_future' %}selected{% endif %}>Akce co již proběhly</option>
-    </select>
-    <button type="submit">Hledat</button>
-</form>
+
+<div class="search-container">
+    <form method="GET" action="{% url 'search_results' %}">
+        <input type="text" name="query" value="{{ query }}" placeholder="Hledat události">
+        <select name="filter">
+            <option value="all" {% if filter_option == 'all' %}selected{% endif %}>Vše</option>
+            <option value="future" {% if filter_option == 'future' %}selected{% endif %}>Nastávající akce</option>
+            <option value="ongoing_future" {% if filter_option == 'ongoing_future' %}selected{% endif %}>Probíhající akce</option>
+            <option value="past" {% if filter_option == 'past' %}selected{% endif %}>Minulé akce</option>
+        </select>
+        <button type="submit">Hledat</button>
+    </form>
+</div>
 
 <ul>
     {% for event in events %}
-    <li>
-        <a href="{% url 'event_detail' event.id %}">{{ event.title }}</a>
-        ({{ event.start_date }} - {{ event.end_date }})
-        - {{ event.location }}
-        - Typ: {{ event.get_event_type_display }}
+    <li class="event-item">
+        <div class="event-details">
+            <a href="{% url 'event_detail' event.id %}" class="event-title">{{ event.title }}</a>
+            <p>{{ event.start_date }} - {{ event.end_date }}</p>
+            <p>{{ event.location }}</p>
+            <p>{{ event.description }}</p>
+        </div>
+        {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }} image">
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
