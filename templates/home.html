@@ -2,9 +2,9 @@
 {% load static %}
 
 {% block content %}
-<h1>Domovská stránka</h1>
+<h1 class="page-title">Úvodní stránka</h1>
 
-<div class="search-container">
+<div class="search-container centered-search">
     <form method="GET" action="{% url 'search_results' %}">
         <label>
             <input type="text" name="query" placeholder="Hledat události">
@@ -20,41 +20,6 @@
         <button type="submit">Hledat</button>
     </form>
 </div>
-
-<style>
-.promotions {
-    padding: 1em 0;
-}
-
-.promotion-container {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 1em; 
-}
-
-.promotion {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    padding: 5px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    width: calc(33.333% - 1em);
-    box-sizing: border-box;
-}
-
-.promotion img {
-    width: 150px;
-    height: 150px; 
-    object-fit: cover; 
-    margin-bottom: 1em;
-}
-
-.promotion-details {
-    text-align: center;
-}
-</style>
 
 <div class="promotions">
     <h2>Upoutávky na akce</h2>

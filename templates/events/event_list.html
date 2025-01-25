@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Seznam událostí</h1>
+<h1 class="page-title">Seznam událostí</h1>
 
-<div class="search-container">
+<div class="search-container centered-search">
     <form method="GET" action="{% url 'search_results' %}">
         <input type="text" name="query" placeholder="Hledat události">
         <select name="filter">
@@ -30,3 +30,4 @@
     {% endfor %}
 </ul>
 {% endblock %}
+
