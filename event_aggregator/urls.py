@@ -28,14 +28,16 @@ urlpatterns = [
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
     path('accounts/logout/', views.user_logout, name='logout'),
     path('accounts/register/', include('registration.backends.default.urls')),
-    path('add/', views.add_event, name='add_event'),
-    path('search/', views.search_results, name='search_results'),
+    path('add/', views.add_event, name='add_event'),  # Přidávání událostí
+    path('search/', views.search_results, name='search_results'),  # Vyhledávač
     path('event/<int:event_id>/', views.event_detail, name='event_detail'),  # Detail události
     path('event/<int:event_id>/edit/', views.edit_event, name='edit_event'),  # Úprava události
     path('api-events/', views.api_event_list, name='api_event_list'),  # API pro události
-    path('about/', views.about, name='about'),
+    path('about/', views.about, name='about'),  # Stránka o nás
     # path('api/', include('events.urls')),
 ]
+
+# Přidáno pro API/Google mapy
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

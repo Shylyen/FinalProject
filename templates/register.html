@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Registrace</title>
 </head>
 <body>
-    <h1>Register</h1>
+    <h1>Registrace</h1>
 
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Register</button>
+        <button type="submit">Registrace</button>
     </form>
 
-    <a href="{% url 'login' %}">Already have an account? Login here</a>
+    <a href="{% url 'login' %}">Už máš účet? Přihlaš se tady</a>
 </body>
 </html>
