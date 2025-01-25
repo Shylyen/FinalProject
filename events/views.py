@@ -115,32 +115,6 @@ def search_results(request):
 def about(request):
     return render(request, 'about.html')
 
-#
-class EventViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Event.objects.all()
-    serializer_class = EventSerializer
-
-    # snadný přístup do API http://127.0.0.1:8000/api/events/upcoming/
-    @action(detail=False, methods=['get'])
-    def upcoming(self, request):
-        start_time = request.query_params.get('start_date', None)
-        end_time = request.query_params.get('end_date', None)
-        events = Event.objects.filter(start_date__gte=now())
-
-        if start_time:
-            events = events.filter(start_date__gte=start_time)
-        if end_time:
-            events = events.filter(end_date__lte=end_time)
-
-        serializer = self.get_serializer(events, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True, methods=['get'])
-    def detail(self, request, pk=None):
-        event = get_object_or_404(Event, pk=pk)
-        serializer = self.get_serializer(event)
-        return Response(serializer.data)
-
 #Zobrazení přidávání události
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()

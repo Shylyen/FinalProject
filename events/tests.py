@@ -1,8 +1,6 @@
 import requests
 from django.test import TestCase
 from django.utils import timezone
-from django.urls import reverse
-
 from events.forms import EventForm
 from events.models import Event
 from django.contrib.auth.models import User
