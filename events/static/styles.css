@@ -1,0 +1,127 @@
+.search-container {
+    margin-bottom: 1000px;
+     text-align: center;
+}
+/*uprava eventu na stránce seznam akcí*/
+.event-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+}
+
+.event-item img {
+    width: 150px;
+    height: 150px;
+    margin-left: 20px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.event-details {
+    flex: 1;
+    text-align: left;
+}
+.event-title {
+    font-size: 2em;
+    font-weight: bold;
+}
+
+.form-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-left {
+  width: 50%;
+}
+/*uprava mapy na stránce registrace akcí*/
+.map-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.map {
+  height: 300px;
+  width: 100%;
+}
+
+
+
+/* uprava událostí a dlaždic na stránce home*/
+.promotions {
+    padding: 1em 0;
+}
+
+.promotion-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.promotion {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    width: calc(33.333% - 1em);
+    box-sizing: border-box;
+}
+
+.promotion img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 1em;
+}
+
+.promotion-details {
+    text-align: center;
+}
+/* uprava horního menu*/
+.my-navbar {
+    background-color: rgba(53, 53, 53, 0.98);
+    color: #ffffff;
+}
+
+.my-navbar .nav-link {
+    color: #ffffff;
+}
+
+/* Uprava nadpisu domovské stríánky*/
+.page-title {
+    margin-top: 30px;
+    text-align: center;
+}
+
+
+.boxed-content {
+    border: 2px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    margin: 20px auto;
+    width: 80%;
+    border-radius:15px ;
+}
+
+.boxed-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius:15px ;
+}
+
+
+.centered-search {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}

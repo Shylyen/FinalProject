@@ -1,24 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Seznam událostí</h1>
+<h1 class="page-title">Seznam událostí</h1>
 
-<form method="GET" action="{% url 'search_results' %}">
-    <input type="text" name="query" placeholder="Hledat události">
-    <select name="filter">
-        <option value="all">Vše</option>
-        <option value="future">Nastávající akce</option>
-        <option value="ongoing_future">Probíhající akce </option>
-    </select>
-    <button type="submit">Hledat</button>
-</form>
+<div class="search-container centered-search">
+    <form method="GET" action="{% url 'search_results' %}">
+        <input type="text" name="query" placeholder="Hledat události">
+        <select name="filter">
+            <option value="all">Vše</option>
+            <option value="future">Nastávající akce</option>
+            <option value="ongoing_future">Probíhající akce</option>
+        </select>
+        <button type="submit">Hledat</button>
+    </form>
+</div>
 
 <ul>
     {% for event in events %}
-    <li>
-       <a href="{% url 'event_detail' event.id %}">{{ event.title }}</a>
-        ({{ event.start_date }} - {{ event.end_date }})
-        - {{ event.location }}
+    <li class="event-item">
+        <div class="event-details">
+            <a href="{% url 'event_detail' event.id %}" class="event-title">{{ event.title }}</a>
+            <p><strong>Datum začátku:</strong> {{ event.start_date|date:"d. m. Y"}} - <strong>Datum konce:</strong> {{ event.end_date|date:"d. m. Y" }}</p>
+            <p><strong>Místo:</strong> {{ event.location }}</p>
+            <p><strong>Popis:</strong> {{ event.description }}</p>
+        </div>
+        {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }} image">
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
 {% endblock %}
+

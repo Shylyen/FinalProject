@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>O nás</h1>
-<p>Jsme tým nadšenců, kteří se zajímají o pořádání akcí a chceme vám pomoci najít ty 
-    nejlepší události ve vašem okolí. Naším cílem je usnadnit vám 
-    život a přinést radost prostřednictvím skvělých akcí.</p>
+<div class="boxed-content">
+    <h1 class="page-title">O nás</h1>
+    {% if about_us_image %}
+        <img src="{{ about_us_image.url }}" alt="O nás obrázek">
+    {% endif %}
+    <p>Jsme vášniví nadšenci, kteří rádi tráví svůj volný čas návštěvou různých kulturních, 
+        gastronomických, ale i sportovních akcí, a proto jsme vytvořili místo, 
+        kde jsou všechny tyto akce shromážděny a každý si může najít událost, která je mu blízká.</p>
+</div>
 {% endblock %}
