@@ -5,6 +5,7 @@ from django.urls import reverse
 from events.models import Event
 from django.contrib.auth.models import User
 
+#API na mapy
 try:
     response = requests.get("http://127.0.0.1:8000/api/events/upcoming/")
     response.raise_for_status()
@@ -13,7 +14,7 @@ except requests.exceptions.RequestException as e:
     print(f"Error: {e}")
 
 
-# tento test ověřuje datum zadání akce / nelze zadat nově akci co již byla
+#Tento test ověřuje datum zadání akce / nelze zadat nově akci co již byla
 
 class EventFormTest(TestCase):
     def setUp(self):
