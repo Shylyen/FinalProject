@@ -1,10 +1,35 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h1>{{ event.title }}</h1>
+<h1 style="margin-top: 30px;">{{ event.title }}</h1>
 <p><strong>Místo:</strong> {{ event.location }}</p>
 <p><strong>Datum:</strong> {{ event.start_date|date:"d. m. Y" }} - {{ event.end_date|date:"d. m. Y" }}</p>
 <p><strong>Typ:</strong> {{ event.get_event_type_display }}</p>
 <p>{{ event.description }}</p>
+
+{% if user.is_authenticated %}
+    {% if user in event.attendees.all %}
+        <p>Jste přihlášeni k této události.</p>
+        <form action="{% url 'unattend_event' event.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Odhlásit se</button>
+        </form>
+    {% else %}
+        <form action="{% url 'attend_event' event.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Přihlásit se</button>
+        </form>
+    {% endif %}
+{% else %}
+    <p>Pro přihlášení k této události se prosím <a href="{% url 'login' %}">přihlaste</a>.</p>
+{% endif %}
+
+<h2>Registrovaní uživatelé</h2>
+<ul>
+    {% for attendee in event.attendees.all %}
+        <li>{{ attendee.username }}</li>
+    {% endfor %}
+</ul>
 
 <h2>Komentáře</h2>
 <ul>
@@ -22,11 +47,7 @@
     <button type="submit">Přidat</button>
 </form>
 {% endif %}
-
-{% comment %}
-<a href="{% url 'register_for_event' event.id %}">Přihlásit se na událost</a>
-{% endcomment %}
-
+    
 {% if user == event.created_by or user.is_staff %}
     <a href="{% url 'edit_event' event.id %}" class="btn btn-warning mt-3">Upravit událost</a>
 {% endif %}

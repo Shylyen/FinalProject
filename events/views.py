@@ -8,10 +8,10 @@ from .serializers import EventSerializer
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
-from events.forms import EventForm, CommentForm
+from events.forms import EventForm, CommentForm, AttendEventForm, UnattendEventForm
 import requests
 
-#Zobrazuje přihlášení
+# Zobrazuje přihlášení
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['Přihlašovací jméno']
@@ -22,17 +22,17 @@ def login_view(request):
             return redirect('event_list')
     return render(request, 'events/login.html')
 
-#Možnost odhlášení
+# Možnost odhlášení
 def user_logout(request):
     logout(request)
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-#Zobrazuje odhlášení
+# Zobrazuje odhlášení
 def logout_view(request):
     logout(request)
     return redirect('event_list')
 
-#Zobrazuje registraci událostí
+# Zobrazuje registraci událostí
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -43,11 +43,11 @@ def register_view(request):
         form = UserCreationForm()
     return render(request, 'events/register.html', {'form': form})
 
-#Importy hlavní stránky
+# Importy hlavní stránky
 from django.shortcuts import render
 from .models import Event, Comment, Promotion
 
-#Zobrazuje hlavní stránku
+# Zobrazuje hlavní stránku
 def home(request):
     events = Event.objects.all()
     comments = Comment.objects.all()
@@ -55,7 +55,7 @@ def home(request):
     print(promotions)
     return render(request, 'home.html', {'events': events, 'comments': comments, 'promotions': promotions})
 
-#Zobrazuje přidávání nových událostí
+# Zobrazuje přidávání nových událostí
 def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -68,12 +68,12 @@ def add_event(request):
         form = EventForm()
     return render(request, 'events/add_event.html', {'form': form})
 
-#Zobrazuje seznam událostí
+# Zobrazuje seznam událostí
 def event_list(request):
-    events = Event.objects.all()
+    events = Event.objects.all().order_by('-start_date')  # Seřazení od nejnovějších k nejstaršímu datu
     return render(request, "events/event_list.html", {"events": events})
 
-#Zobrazuje detail události
+# Zobrazuje detail události
 def event_detail(request, event_id):
     event = get_object_or_404(Event, id=event_id)
     comments = event.comments.all()
@@ -90,7 +90,7 @@ def event_detail(request, event_id):
 
     return render(request, 'events/event_detail.html', {'event': event, 'comments': comments, 'form': form})
 
-#Zobrazuje vyhledávač událostí
+# Zobrazuje vyhledávač událostí
 def search_results(request):
     query = request.GET.get('query', '')
     filter_option = request.GET.get('filter', 'all')
@@ -111,11 +111,11 @@ def search_results(request):
 
     return render(request, 'events/search_results.html', {'events': events, 'query': query, 'filter_option': filter_option})
 
-#Zobrazení stránky o nás
+# Zobrazení stránky o nás
 def about(request):
     return render(request, 'about.html')
 
-#Zobrazení přidávání události
+# Zobrazení přidávání události
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
@@ -128,7 +128,7 @@ class EventViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-#Jenom admin může upravovat událost
+# Jenom admin může upravovat událost
 @login_required
 def edit_event(request, event_id):
     event = get_object_or_404(Event, id=event_id)
@@ -146,7 +146,7 @@ def edit_event(request, event_id):
 
     return render(request, 'events/edit_event.html', {'form': form, 'event': event})
 
-#API pro vyhladávání událostí z jiných webů - ze stránky kudy z nudy nám na API neudelii přístup
+# API pro vyhladávání událostí z jiných webů - ze stránky kudy z nudy nám na API neudelii přístup
 API_URL = "https://www.kudyznudy.cz/kalendar-akci/api-events/"
 
 def api_event_list(request):
@@ -171,3 +171,17 @@ def api_event_list(request):
         events = []
 
     return render(request, 'events/api_event_list.html', {'events': events})
+
+# Přihlašování na události
+@login_required
+def attend_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    event.attendees.add(request.user)
+    return redirect('event_detail', event_id=event_id)
+
+# Odhlašování z událostí
+@login_required
+def unattend_event(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    event.attendees.remove(request.user)
+    return redirect('event_detail', event_id=event_id)
